@@ -21,6 +21,10 @@ class TestBitlyr < Test::Unit::TestCase
         strategy = Bitlyr.new(:client_id => "client id", :client_secret => "client secret").send(:strategy)
         assert strategy.is_a?(Bitlyr::Strategy::OAuth)
       end
+      should "not create an access token for the client" do
+        strategy = Bitlyr.new(:client_id => "client id", :client_secret => "client secret").send(:strategy)
+        assert_equal nil, strategy.send(:access_token)
+      end
     end
     context "with a client id, client secret and token" do
       should "create a new bitlyr client" do
@@ -30,6 +34,10 @@ class TestBitlyr < Test::Unit::TestCase
       should "create have a OAuth Strategy" do
         strategy = Bitlyr.new(:client_id => "client id", :client_secret => "client secret", :token => "token").send(:strategy)
         assert strategy.is_a?(Bitlyr::Strategy::OAuth)
+      end
+      should "create have a bitlyr access token" do
+        strategy = Bitlyr.new(:client_id => "client id", :client_secret => "client secret", :token => "token").send(:strategy)
+        assert strategy.send(:access_token).is_a?(Bitlyr::Strategy::AccessToken)
       end
     end
     context "with bad information" do

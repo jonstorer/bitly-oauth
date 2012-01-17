@@ -10,7 +10,7 @@ module Bitlyr
     params.symbolize_keys!
     if params.key?(:client_id) && params.key?(:client_secret)
       strategy = Bitlyr::Strategy::OAuth.new(params[:client_id], params[:client_secret])
-      strategy.get_access_token_from_token(params[:token]) if params[:token]
+      strategy.set_access_token_from_token!(params[:token]) if params[:token]
       Bitlyr::Client.new strategy
     elsif params.key?(:login) && params.key?(:api_key)
       Bitlyr::Client.new Bitlyr::Strategy::ApiKey.new(params[:login], params[:api_key])
