@@ -8,23 +8,23 @@ A Ruby API for [http://bit.ly](http://bit.ly)
 
 ## NOTE:
 
-Bitly recently released their version 3 API. From this 0.8.0 release, the gem with only use the version 3 API.
+Bitly recently released their version 3 API. From this 0.9.0 release, the gem with only use the version 3 API.
 
 The gem will continue to support both Username and ApiKey as well as the OAuth Client ID and Client Secret
 
 To use, you will need to select a authorization strategy:
 
-    strategy = Bitly::Strategy::ApiKey.new(username, api_key)
+    strategy = Bitlyr::Strategy::ApiKey.new(username, api_key)
 
 or
 
-    strategy = Bitly::Strategy::OAuth.new(client_id, client_secret)
+    strategy = Bitlyr::Strategy::OAuth.new(client_id, client_secret)
 
 Once you have a strategy, you can initialize your client:
 
-    client = Bitly::Client.new(strategy)
+    client = Bitlyr::Client.new(strategy)
 
-which will give you a ``Bitly::Client`` which provides access to the version 3 endpoints (``shorten``, ``expand``, ``clicks``, ``validate`` and ``bitly_pro_domain``). See [http://api.bit.ly](http://api.bit.ly) for details.
+which will give you a ``Bitlyr::Client`` which provides access to the version 3 endpoints (``shorten``, ``expand``, ``clicks``, ``validate`` and ``bitly_pro_domain``). See [http://api.bit.ly](http://api.bit.ly) for details.
 
 
 ## INSTALLATION:
@@ -35,40 +35,47 @@ which will give you a ``Bitly::Client`` which provides access to the version 3 e
 
 Please see the Bit.ly API documentation [http://api.bit.ly](http://api.bit.ly) for details on the V3 API.
 
-Create a Bitly client using your username and api key as follows:
+Create a Bitlyr client using your username and api key as follows:
 
-    bitly = Bitly.new(:login => "login", :api_key => "api_key")
+    client = Bitlyr.new(:login => "login", :api_key => "api_key")
+
+or
+
+    client = Bitlyr.new(:client_id => "client id", :client_secret => "client secret", :token => "token")
 
 You can then use that client to shorten or expand urls or return more information or statistics as so:
 
-    bitly.shorten('http://www.google.com')
-    bitly.shorten('http://www.google.com', :history => 1) # adds the url to the api user's history
-    bitly.expand('wQaT') || bitly.expand('http://bit.ly/wQaT')
-    bitly.info('wQaT')   || bitly.info('http://bit.ly/wQaT')
-    bitly.stats('wQaT')  || bitly.info('http://bit.ly/wQaT')
+    client.shorten('http://www.google.com')
+    client.shorten('http://www.google.com', :history => 1) # adds the url to the api user's history
+    client.expand('wQaT') || client.expand('http://bit.ly/wQaT')
+    client.info('wQaT')   || client.info('http://bit.ly/wQaT')
+    client.stats('wQaT')  || client.info('http://bit.ly/wQaT')
 
 Each can be used in all the methods described in the API docs, the shorten function, for example, takes a url or an array of urls.
 
-All four functions return a ``Bitly::Url`` object (or an array of ``Bitly::Url`` objects if you supplied an array as the input). You can then get all the information required from that object.
+All four functions return a ``Bitlyr::Url`` object (or an array of ``Bitlyr::Url`` objects if you supplied an array as the input). You can then get all the information required from that object.
 
-    u = bitly.shorten('http://www.google.com') #=> Bitly::Url
+    url = client.shorten('http://www.google.com') #=> Bitlyr::Url
 
-    u.long_url  #=> "http://www.google.com&quot;
-    u.short_url #=> "http://bit.ly/Ywd1&quot;
-    u.bitly_url #=> "http://bit.ly/Ywd1&quot;
-    u.jmp_url   #=> "http://j.mp/Ywd1&quot;
-    u.user_hash #=> "Ywd1"
-    u.hash      #=> "2V6CFi"
-    u.info      #=> a ruby hash of the JSON returned from the API
-    u.stats     #=> a ruby hash of the JSON returned from the API
-
-    bitly.shorten('http://www.google.com', 'keyword')
+    url.clicks_by_day    #=> an array of ``Bitlyr::Day``s
+    url.countries        #=> an array of ``Bitlyr::Country``s
+    url.referrers        #=> an array of ``Bitlyr::Referrer``s
+    url.clicks_by_minute #=> an array of 60 integers representing clicks over the last 60 minutes
+    url.created_by       #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/info
+    url.global_clicks    #=> integer / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/clicks
+    url.global_hash      #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/info
+    url.long_url         #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/expand
+    url.new_hash?        #=> boolean / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/shorten
+    url.short_url        #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/shorten
+    url.title            #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/info
+    url.user_clicks      #=> integer / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/clicks
+    url.user_hash        #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/expand
 
 ## LICENSE:
 
 > (The MIT License)
 >
-> Copyright (c) 2009 Phil Nash
+> Copyright (c) 2012 Jonathon Storer
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
