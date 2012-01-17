@@ -15,7 +15,7 @@ class TestOAuthStrategy < Test::Unit::TestCase
       assert_equal @client_secret, @strategy.send(:client).secret
     end
     should 'get the oauth authorize url' do
-      assert_match %r{https://api-ssl\.bit\.ly/oauth/authorize\?.*client_id=#{@client_id}.*}, @strategy.authorize_url('http://test.local')
+      assert_match %r{https://bitly.com/oauth/authorize\?.*client_id=#{@client_id}.*}, @strategy.authorize_url('http://test.local')
     end
     should 'get access token with access token' do
       access_token = @strategy.get_access_token_from_token('hello')
