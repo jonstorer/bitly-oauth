@@ -1,103 +1,124 @@
 module Bitly
-  
+
+  # Url objects should only be created by the client object as it collects the correct information
+  # from the API.
   class Url
-    include Bitly::Utils
-    
-    attr_accessor :long_url, :short_url, :hash, :user_hash
-    VARIABLES = ['long_url', 'short_url', 'hash', 'user_hash']
-    
-    def initialize(login,api_key,obj=nil)
-      unless obj.nil?
-        raise BitlyError.new(obj['errorMessage'],obj['errorCode']) if obj['statusCode'] == "ERROR"
-        instance_variablise(obj, VARIABLES)
-        @info = obj[:info] if obj[:info]
-        @stats = obj[:stats] if obj[:stats]
-      end
-      @login = login
-      @api_key = api_key
-      raise ArgumentError.new("Please provide a login and api_key") if @login.nil? || @api_key.nil?
-    end
-    
-    def shorten(opts = {})
-      return @short_url if @short_url
-      unless @long_url.nil?
-        request = create_url("shorten", :longUrl => @long_url, :history => (opts[:history] ? 1 : nil))
-        result = get_result(request)[@long_url.gsub(/\/$/,'')]
-        if result['statusCode'] == "ERROR"
-          raise BitlyError.new(result['errorMessage'],result['errorCode'])
-        else
-          instance_variablise(result,VARIABLES)
-          return @short_url
-        end
+    attr_reader :short_url, :long_url, :user_hash, :global_hash, :referrers, :countries
+
+    # Initialize with a bitly client and optional hash to fill in the details for the url.
+    def initialize(client, options = {})
+      @client        = client
+      @title         = options['title'] || '' if options.key?('title')
+      @new_hash      = (options['new_hash'] == 1)
+      @long_url      = options['long_url']
+      @user_hash     = options['hash'] || options['user_hash']
+      @short_url     = options['url'] || options['short_url'] || "http://bit.ly/#{@user_hash}"
+      @created_by    = options['created_by']
+      @global_hash   = options['global_hash']
+      @user_clicks   = options['user_clicks']
+      @global_clicks = options['global_clicks']
+
+      @referrers = options['referrers'].map{|referrer| Bitly::Referrer.new(referrer) } if options['referrers']
+      @countries = options['countries'].map{|country| Bitly::Country.new(country) } if options['countries']
+
+      if options['clicks'] && options['clicks'][0].is_a?(Hash)
+        @clicks_by_day = options['clicks'].map{|day| Bitly::Day.new(day)}
       else
-        raise ArgumentError.new("You need a long_url in order to shorten it")
+        @clicks_by_minute = options['clicks']
       end
     end
-    
-    def expand
-      return @long_url if @long_url
-      unless !(@short_url || @hash)
-        unless @hash
-          @hash = create_hash_from_url(@short_url)
-        end
-        request = create_url("expand", :hash => @hash)
-        result = get_result(request)[@hash]
-        if result['statusCode'] == "ERROR"
-          raise BitlyError.new(result['errorMessage'],result['errorCode'])
-        else
-          instance_variablise(result,VARIABLES)
-          return @long_url
-        end
-      else
-        raise ArgumentError.new("You need a short_url or a hash in order to expand it")
+
+    # Returns true if the user hash was created first for this call
+    def new_hash?
+      @new_hash
+    end
+
+    # If the url already has click statistics, returns the user clicks.
+    # IF there are no click statistics or <tt>:force => true</tt> is passed,
+    # updates the stats and returns the user clicks
+    def user_clicks(options={})
+      update_clicks_data if @user_clicks.nil? || options[:force]
+      @user_clicks
+    end
+
+    # If the url already has click statistics, returns the global clicks.
+    # IF there are no click statistics or <tt>:force => true</tt> is passed,
+    # updates the stats and returns the global clicks
+    def global_clicks(options={})
+      update_clicks_data if @global_clicks.nil? || options[:force]
+      @global_clicks
+    end
+
+    # If the url already has the title, return it.
+    # IF there is no title or <tt>:force => true</tt> is passed,
+    # updates the info and returns the title
+    def title(options={})
+      update_info if @title.nil? || options[:force]
+      @title
+    end
+
+    # If the url already has the creator, return it.
+    # IF there is no creator or <tt>:force => true</tt> is passed,
+    # updates the info and returns the creator
+    def created_by(options={})
+      update_info if @created_by.nil? || options[:force]
+      @created_by
+    end
+
+    # If the url already has referrer data, return it.
+    # IF there is no referrer or <tt>:force => true</tt> is passed,
+    # updates the referrers and returns them
+    def referrers(options={})
+      update_referrers if @referrers.nil? || options[:force]
+      @referrers
+    end
+
+    # If the url already has country data, return it.
+    # IF there is no country or <tt>:force => true</tt> is passed,
+    # updates the countries and returns them
+    def countries(options={})
+      update_countries if @countries.nil? || options[:force]
+      @countries
+    end
+
+    def clicks_by_minute(options={})
+      if @clicks_by_minute.nil? || options[:force]
+        full_url = @client.clicks_by_minute(@user_hash || @short_url)
+        @clicks_by_minute = full_url.clicks_by_minute
       end
+      @clicks_by_minute
     end
-    
-    def info
-      if @info.nil?
-        if @hash
-          request = create_url "info", :hash => @hash
-          result = get_result(request)[@hash]
-          instance_variablise(result, VARIABLES)
-          @info = result
-        elsif @short_url
-          @hash = create_hash_from_url(@short_url)
-          request = create_url "info", :hash => hash
-          result = get_result(request)[hash]
-          instance_variablise(result, VARIABLES)
-          @info = result
-        else
-          raise ArgumentError.new("You need a hash or short_url in order to get info")
-        end
-        return @info
-      else
-        @info
+
+    def clicks_by_day(options={})
+      if @clicks_by_day.nil? || options[:force]
+        full_url = @client.clicks_by_day(@user_hash || @short_url)
+        @clicks_by_day = full_url.clicks_by_day
       end
+      @clicks_by_day
     end
-    
-    def stats
-      if @stats.nil?
-        if @hash
-          request = create_url "stats", :hash => @hash
-        elsif @short_url
-          @hash = create_hash_from_url(@short_url)
-          request = create_url "stats", :hash => @hash
-        else
-          raise ArgumentError.new("You need a hash or short_url in order to get stats")
-        end
-        @stats = get_result(request)
-      else
-        @stats
-      end
+
+    private
+
+    def update_clicks_data
+      full_url = @client.clicks(@user_hash || @short_url)
+      @global_clicks = full_url.global_clicks
+      @user_clicks = full_url.user_clicks
     end
-    
-    def bitly_url
-      @short_url.nil? ? nil : @short_url.gsub(/j\.mp/,'bit.ly')
+
+    def update_info
+      full_url = @client.info(@user_hash || @short_url)
+      @created_by = full_url.created_by
+      @title = full_url.title
     end
-    
-    def jmp_url
-      @short_url.nil? ? nil : @short_url.gsub(/bit\.ly/,'j.mp')
+
+    def update_referrers
+      full_url = @client.referrers(@user_hash || @short_url)
+      @referrers = full_url.referrers
+    end
+
+    def update_countries
+      full_url = @client.countries(@user_hash || @short_url)
+      @countries = full_url.countries
     end
   end
-
 end

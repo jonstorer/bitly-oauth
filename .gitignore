@@ -1,2 +1,6 @@
 pkg
 doc
+coverage/*
+.bundle/*
+*.sw[nomp]
+.rake_tasks

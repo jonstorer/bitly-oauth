@@ -1,3 +1,12 @@
+=== 0.8.0 / 2012-1-17
+
+* Major Refactor
+
+  * Adds Authentication Strategies
+  * Client supports OAuth & Login/ApiKey strategies
+  * User supports AccessToken strategy
+  * Forked original project. Pull requests in original project showed no movement.
+
 === 0.7.0 / 2011-1-8
 
 * 1 major bug fix
@@ -115,13 +124,13 @@
 
 * 1 bug fix
 
-	* Urls with parameters were choking, changed to using CGI.
+  * Urls with parameters were choking, changed to using CGI.
 
 === 0.1.2 / 2009-03-12
 
 * 1 minor enhancement
 
-	* Allows to add a keyword for shortening urls
+  * Allows to add a keyword for shortening urls
 
 === 0.1.1 / 2009-01-26
 
