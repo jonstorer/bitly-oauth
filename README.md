@@ -1,4 +1,4 @@
-# bitly
+# bitlyr
 
 ## DESCRIPTION:
 
@@ -8,37 +8,44 @@ A Ruby API for [http://bit.ly](http://bit.ly)
 
 ## NOTE:
 
-Bitly recently released their version 3 API. From this 0.5.0 release, the gem will continue to work the same but also provide a V3 module, using the version 3 API. The standard module will become deprecated, as Bitly do not plan to keep the version 2 API around forever.
+Bitly recently released their version 3 API. From this 0.8.0 release, the gem with only use the version 3 API.
 
-To move to using the version 3 API, call:
+The gem will continue to support both Username and ApiKey as well as the OAuth Client ID and Client Secret
 
-    Bitly.use_api_version_3
+To use, you will need to select a authorization strategy:
 
-Then, when you call ``Bitly.new(username, api_key)`` you will get a ``Bitly::V3::Client`` instead, which provides the version 3 api calls (``shorten``, ``expand``, ``clicks``, ``validate`` and ``bitly_pro_domain``). See [http://api.bit.ly](http://api.bit.ly) for details.
+    strategy = Bitly::Strategy::ApiKey.new(username, api_key)
 
-Eventually, this will become the default version used and finally, the V3 module will disappear, with the version 3 classes replacing the version 2 classes.
+or
 
-(Please excuse the lack of tests for the v3 classes, they are fully tested and ready to replace this whole codebase in the v3 branch of the GitHub repo, until I realized it would break everything.)
+    strategy = Bitly::Strategy::OAuth.new(client_id, client_secret)
+
+Once you have a strategy, you can initialize your client:
+
+    client = Bitly::Client.new(strategy)
+
+which will give you a ``Bitly::Client`` which provides access to the version 3 endpoints (``shorten``, ``expand``, ``clicks``, ``validate`` and ``bitly_pro_domain``). See [http://api.bit.ly](http://api.bit.ly) for details.
+
 
 ## INSTALLATION:
 
-    gem install bitly
+    gem install bitlyr
 
 ## USAGE:
 
-### Version 2 API
+Please see the Bit.ly API documentation [http://api.bit.ly](http://api.bit.ly) for details on the V3 API.
 
 Create a Bitly client using your username and api key as follows:
 
-    bitly = Bitly.new(username, api_key)
+    bitly = Bitly.new(:login => "login", :api_key => "api_key")
 
 You can then use that client to shorten or expand urls or return more information or statistics as so:
 
     bitly.shorten('http://www.google.com')
     bitly.shorten('http://www.google.com', :history => 1) # adds the url to the api user's history
-    bitly.expand('wQaT')
-    bitly.info('http://bit.ly/wQaT')
-    bitly.stats('http://bit.ly/wQaT')
+    bitly.expand('wQaT') || bitly.expand('http://bit.ly/wQaT')
+    bitly.info('wQaT')   || bitly.info('http://bit.ly/wQaT')
+    bitly.stats('wQaT')  || bitly.info('http://bit.ly/wQaT')
 
 Each can be used in all the methods described in the API docs, the shorten function, for example, takes a url or an array of urls.
 
@@ -46,20 +53,16 @@ All four functions return a ``Bitly::Url`` object (or an array of ``Bitly::Url``
 
     u = bitly.shorten('http://www.google.com') #=> Bitly::Url
 
-    u.long_url #=> "http://www.google.com&quot;
+    u.long_url  #=> "http://www.google.com&quot;
     u.short_url #=> "http://bit.ly/Ywd1&quot;
     u.bitly_url #=> "http://bit.ly/Ywd1&quot;
-    u.jmp_url #=> "http://j.mp/Ywd1&quot;
+    u.jmp_url   #=> "http://j.mp/Ywd1&quot;
     u.user_hash #=> "Ywd1"
-    u.hash #=> "2V6CFi"
-    u.info #=> a ruby hash of the JSON returned from the API
-    u.stats #=> a ruby hash of the JSON returned from the API
+    u.hash      #=> "2V6CFi"
+    u.info      #=> a ruby hash of the JSON returned from the API
+    u.stats     #=> a ruby hash of the JSON returned from the API
 
     bitly.shorten('http://www.google.com', 'keyword')
-
-### Version 3 API
-
-Please see the Bit.ly API documentation [http://api.bit.ly](http://api.bit.ly) for details on the V3 API.
 
 ## LICENSE:
 
