@@ -13,7 +13,6 @@ DESCRIPTION
   gem.homepage = "http://github.com/jonstorer/bitlyr"
   gem.authors = ["jonstorer"]
   gem.add_dependency 'httparty', ">= 0.7.6"
-  gem.add_dependency 'crack', ">= 0.1.4"
   gem.add_dependency 'oauth2', '>= 0.1.1'
   gem.add_development_dependency "shoulda", ">= 0"
   gem.add_development_dependency "jeweler", ">= 1.4.0"
