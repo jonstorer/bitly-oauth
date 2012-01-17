@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
   module Strategy
     class OAuth < Base
       extend Forwardable
@@ -21,14 +21,14 @@ module Bitly
       # to the authorize_url method
       def get_access_token_from_code(code, redirect_url)
         access_token = client.auth_code.get_token(code, :redirect_uri => redirect_url, :parse => :query)
-        Bitly::Strategy::AccessToken.new(access_token)
+        Bitlyr::Strategy::AccessToken.new(access_token)
       end
 
       # If you already have a user token, this method gets the access token
       def get_access_token_from_token(token, params={})
         params.stringify_keys!
         access_token = ::OAuth2::AccessToken.new(client, token, params)
-        Bitly::Strategy::AccessToken.new(access_token)
+        Bitlyr::Strategy::AccessToken.new(access_token)
       end
 
       # If you already have a user token, this method sets the access token

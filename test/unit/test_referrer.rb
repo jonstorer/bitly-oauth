@@ -3,7 +3,7 @@ require 'test_helper'
 class TestReferrer < Test::Unit::TestCase
   context "a referrer" do
     setup do
-      @referrer = Bitly::Referrer.new({})
+      @referrer = Bitlyr::Referrer.new({})
     end
 
     [:clicks, :referrer, :referrer_app, :url].each do |method|
@@ -12,7 +12,7 @@ class TestReferrer < Test::Unit::TestCase
       end
 
       should "set #{method} when initializing" do
-        referrer = Bitly::Referrer.new(method.to_s => 'test')
+        referrer = Bitlyr::Referrer.new(method.to_s => 'test')
         assert_equal 'test', referrer.send(method)
       end
     end

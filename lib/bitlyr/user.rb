@@ -1,20 +1,20 @@
-module Bitly
+module Bitlyr
 
   # A user requires an oauth access token. The flow is as follows:
   #
-  #     o = Bitly::Strategy::OAuth.new(consumer_token, consumer_secret)
+  #     o = Bitlyr::Strategy::OAuth.new(consumer_token, consumer_secret)
   #     o.authorize_url(redirect_url)
-  #     #=> "https://bit.ly/oauth/authorize?client_id=#{consumer_token}&type=web_server&redirect_uri=http%3A%2F%2Ftest.local%2Fbitly%2Fauth"
+  #     #=> "https://bit.ly/oauth/authorize?client_id=#{consumer_token}&type=web_server&redirect_uri=http%3A%2F%2Ftest.local%2Fbitlyr%2Fauth"
   # Redirect your users to this url, when they authorize your application
   # they will be redirected to the url you provided with a code parameter.
   # Use that parameter, and the exact same redirect url as follows:
   #
   #     o.get_access_token_from_code(params[:code], redirect_url)
-  #     #=> #<Bitly::AccessToken ...>
+  #     #=> #<Bitlyr::AccessToken ...>
   #
   # Then use that access token to create your user object.
   #
-  #    u=Bitly::User.new(o.access_token)
+  #    u=Bitlyr::User.new(o.access_token)
   class User
 
     def initialize(access_token)
@@ -27,7 +27,7 @@ module Bitly
     # http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/user/referrers
     def referrers(options={})
       if @referrers.nil? || options.delete(:force)
-        @referrers = get_method(:referrers, Bitly::Referrer, options)
+        @referrers = get_method(:referrers, Bitlyr::Referrer, options)
       end
       @referrers
     end
@@ -38,7 +38,7 @@ module Bitly
     # http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/user/countries
     def countries(options={})
       if @countries.nil? || options.delete(:force)
-        @countries = get_method(:countries, Bitly::Country, options)
+        @countries = get_method(:countries, Bitlyr::Country, options)
       end
       @countries
     end
@@ -50,7 +50,7 @@ module Bitly
     def realtime_links(options={})
       if @realtime_links.nil? || options.delete(:force)
         result = get(:realtime_links, options)
-        @realtime_links = result['realtime_links'].map { |rs| Bitly::RealtimeLink.new(rs) }
+        @realtime_links = result['realtime_links'].map { |rs| Bitlyr::RealtimeLink.new(rs) }
       end
       @realtime_links
     end
@@ -71,7 +71,7 @@ module Bitly
 
     # Returns a Bitly Client using the credentials of the user.
     def client
-      @client ||= Bitly::Client.new(@access_token)
+      @client ||= Bitlyr::Client.new(@access_token)
     end
 
     private
@@ -88,7 +88,7 @@ module Bitly
     def get_clicks(options={})
       if @clicks.nil? || options.delete(:force)
         result = get(:clicks, options)
-        @clicks = result['clicks'].map { |rs| Bitly::Day.new(rs) }
+        @clicks = result['clicks'].map { |rs| Bitlyr::Day.new(rs) }
         @total_clicks = result['total_clicks']
       end
     end

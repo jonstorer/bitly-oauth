@@ -1,4 +1,4 @@
-class BitlyError < StandardError
+class BitlyrError < StandardError
   attr_reader :code, :response
 
   alias :msg :message

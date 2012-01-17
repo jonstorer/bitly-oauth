@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
   module Strategy
     class AccessToken < Base
       extend Forwardable

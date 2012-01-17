@@ -5,7 +5,7 @@ class TestOAuthStrategy < Test::Unit::TestCase
     setup do
       @client_id     = 'id'
       @client_secret = 'secret'
-      @strategy      = Bitly::Strategy::OAuth.new(@client_id, @client_secret)
+      @strategy      = Bitlyr::Strategy::OAuth.new(@client_id, @client_secret)
     end
     should 'create the oauth client' do
       assert_kind_of OAuth2::Client, @strategy.send(:client)
@@ -19,13 +19,13 @@ class TestOAuthStrategy < Test::Unit::TestCase
     end
     should 'get access token with access token' do
       access_token = @strategy.get_access_token_from_token('hello')
-      assert_kind_of Bitly::Strategy::AccessToken, access_token
+      assert_kind_of Bitlyr::Strategy::AccessToken, access_token
       assert_equal @strategy.send(:client), access_token.client
     end
     should 'set access token with access token' do
       @strategy.set_access_token_from_token!('hello')
       access_token = @strategy.send(:access_token)
-      assert_kind_of Bitly::Strategy::AccessToken, access_token
+      assert_kind_of Bitlyr::Strategy::AccessToken, access_token
       assert_equal @strategy.send(:client), access_token.client
     end
   end

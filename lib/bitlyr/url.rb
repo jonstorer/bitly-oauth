@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
 
   # Url objects should only be created by the client object as it collects the correct information
   # from the API.
@@ -18,11 +18,11 @@ module Bitly
       @user_clicks   = options['user_clicks']
       @global_clicks = options['global_clicks']
 
-      @referrers = options['referrers'].map{|referrer| Bitly::Referrer.new(referrer) } if options['referrers']
-      @countries = options['countries'].map{|country| Bitly::Country.new(country) } if options['countries']
+      @referrers = options['referrers'].map{|referrer| Bitlyr::Referrer.new(referrer) } if options['referrers']
+      @countries = options['countries'].map{|country| Bitlyr::Country.new(country) } if options['countries']
 
       if options['clicks'] && options['clicks'][0].is_a?(Hash)
-        @clicks_by_day = options['clicks'].map{|day| Bitly::Day.new(day)}
+        @clicks_by_day = options['clicks'].map{|day| Bitlyr::Day.new(day)}
       else
         @clicks_by_minute = options['clicks']
       end

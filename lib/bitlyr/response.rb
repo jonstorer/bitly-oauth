@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
   class Response
     REASONS = { "OK"          => "OK",
                 "INVALID_URI" => "Invalid URI" }.freeze

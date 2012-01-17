@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
 
   # The client is the main part of this gem. You need to initialize the client with your
   # username and API key and then you will be able to use the client to perform
@@ -8,14 +8,14 @@ module Bitly
 
     delegate [ :validate, :valid? ] => :strategy
 
-    # Requires a Bitly::Strategy
+    # Requires a Bitlyr::Strategy
     def initialize(strategy)
-      raise ArgumentError, "Requires a Bitly::Strategy" unless strategy.is_a?(Bitly::Strategy::Base)
+      raise ArgumentError, "Requires a Bitlyr::Strategy" unless strategy.is_a?(Bitlyr::Strategy::Base)
 
       @strategy = strategy
     end
 
-    # Checks whether a domain is a bitly.Pro domain
+    # Checks whether a domain is a Bitly Pro Domain
     def bitly_pro_domain(domain)
       response = get(:bitly_pro_domain, :domain => domain)
       return response['bitly_pro_domain']
@@ -32,7 +32,7 @@ module Bitly
     #
     def shorten(long_url, options={})
       response = get(:shorten, { :longUrl => long_url }.merge(options))
-      return Bitly::Url.new(self, response)
+      return Bitlyr::Url.new(self, response)
     end
 
     # Expands either a hash, short url or array of either.
@@ -64,9 +64,9 @@ module Bitly
         url['long_url'] = url.delete('url')
         if url['error'].nil?
           # builds the results array in the same order as the input
-          results[input.index(url['long_url'])] = Bitly::Url.new(self, url)
+          results[input.index(url['long_url'])] = Bitlyr::Url.new(self, url)
         else
-          results[input.index(url['long_url'])] = Bitly::MissingUrl.new(url)
+          results[input.index(url['long_url'])] = Bitlyr::MissingUrl.new(url)
         end
         # remove the key from the original array, in case the same hash/url was entered twice
         input[input.index(url['long_url'])] = nil
@@ -116,7 +116,7 @@ module Bitly
       key = is_a_short_url?(input) ? :shortUrl : :hash
 
       response = get(method, key => input.to_a)
-      return Bitly::Url.new(self, response)
+      return Bitlyr::Url.new(self, response)
     end
 
     def get_method(method, input, options={})
@@ -135,9 +135,9 @@ module Bitly
 
         if url['error'].nil?
           # builds the results array in the same order as the input
-          results[result_index] = Bitly::Url.new(self, url)
+          results[result_index] = Bitlyr::Url.new(self, url)
         else
-          results[result_index] = Bitly::MissingUrl.new(url)
+          results[result_index] = Bitlyr::MissingUrl.new(url)
         end
         # remove the key from the original array, in case the same hash/url was entered twice
         input[result_index] = nil

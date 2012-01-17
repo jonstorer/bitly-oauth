@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
   class MissingUrl
     attr_accessor :short_url, :user_hash, :long_url, :error
 

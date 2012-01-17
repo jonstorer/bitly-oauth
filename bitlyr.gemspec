@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "bitlyr"
-  s.version = "0.1.0"
+  s.version = "0.9.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["jonstorer"]
@@ -14,33 +14,34 @@ Gem::Specification.new do |s|
   s.email = "jonathon.scott.storer@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE",
+    "README.md",
     "README.rdoc"
   ]
   s.files = [
     "History.txt",
     "LICENSE",
+    "README.md",
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "bitly.gemspec",
-    "lib/bitly.rb",
-    "lib/bitly/client.rb",
-    "lib/bitly/country.rb",
-    "lib/bitly/day.rb",
-    "lib/bitly/error.rb",
-    "lib/bitly/lib/core_ext/hash.rb",
-    "lib/bitly/lib/core_ext/string.rb",
-    "lib/bitly/missing_url.rb",
-    "lib/bitly/realtime_link.rb",
-    "lib/bitly/referrer.rb",
-    "lib/bitly/response.rb",
-    "lib/bitly/strategy/access_token.rb",
-    "lib/bitly/strategy/api_key.rb",
-    "lib/bitly/strategy/base.rb",
-    "lib/bitly/strategy/oauth.rb",
-    "lib/bitly/url.rb",
-    "lib/bitly/user.rb",
-    "lib/bitly/version.rb",
+    "bitlyr.gemspec",
+    "lib/bitlyr.rb",
+    "lib/bitlyr/client.rb",
+    "lib/bitlyr/country.rb",
+    "lib/bitlyr/day.rb",
+    "lib/bitlyr/error.rb",
+    "lib/bitlyr/lib/core_ext/hash.rb",
+    "lib/bitlyr/lib/core_ext/string.rb",
+    "lib/bitlyr/missing_url.rb",
+    "lib/bitlyr/realtime_link.rb",
+    "lib/bitlyr/referrer.rb",
+    "lib/bitlyr/response.rb",
+    "lib/bitlyr/strategy/access_token.rb",
+    "lib/bitlyr/strategy/api_key.rb",
+    "lib/bitlyr/strategy/base.rb",
+    "lib/bitlyr/strategy/oauth.rb",
+    "lib/bitlyr/url.rb",
+    "lib/bitlyr/user.rb",
     "test/fixtures/9uX1TE.json",
     "test/fixtures/9uX1TEclicks.json",
     "test/fixtures/9uX1TEclicks2.json",
@@ -91,7 +92,6 @@ Gem::Specification.new do |s|
     "test/fixtures/valid_user.json",
     "test/integration/strategy/test_api_key.rb",
     "test/integration/strategy/test_oauth.rb",
-    "test/integration/test_bitly.rb",
     "test/integration/test_client.rb",
     "test/integration/test_user.rb",
     "test/test_helper.rb",

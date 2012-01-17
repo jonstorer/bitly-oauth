@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
   class Referrer
     attr_reader :clicks, :referrer, :referrer_app, :url
 

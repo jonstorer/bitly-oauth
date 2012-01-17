@@ -3,7 +3,7 @@ require 'test_helper'
 class TestCountry < Test::Unit::TestCase
   context "a country" do
     setup do
-      @country = Bitly::Country.new
+      @country = Bitlyr::Country.new
     end
 
     [:clicks, :country].each do |method|
@@ -12,7 +12,7 @@ class TestCountry < Test::Unit::TestCase
       end
 
       should "set #{method} when initializing" do
-        country = Bitly::Country.new(method.to_s => 'test')
+        country = Bitlyr::Country.new(method.to_s => 'test')
         assert_equal 'test', country.send(method)
       end
     end

@@ -1,12 +1,12 @@
-module Bitly
+module Bitlyr
   module Strategy
     class Base
       def request(*args)
-        response = Bitly::Response.new(run_request(*args))
+        response = Bitlyr::Response.new(run_request(*args))
         if response.success?
           response.body
         else
-          raise BitlyError.new(response)
+          raise BitlyrError.new(response)
         end
       end
 

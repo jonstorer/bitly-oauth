@@ -3,11 +3,11 @@ require 'test_helper'
 class TestUrl < Test::Unit::TestCase
   context "with a client" do
     setup do
-      @bitly = Bitly.new(:login => login_fixture, :api_key => api_key_fixture)
+      @client = Bitlyr.new(:login => login_fixture, :api_key => api_key_fixture)
     end
     context "and a url" do
       setup do
-        @url = Bitly::Url.new(@bitly)
+        @url = Bitlyr::Url.new(@client)
       end
       [:short_url,
        :long_url,
@@ -32,7 +32,7 @@ class TestUrl < Test::Unit::TestCase
       context "getting click data" do
         setup do
           stub_get("http://api.bit.ly/v3/clicks?hash=9uX1TE&login=test_account&apiKey=test_key", ['9uX1TEclicks.json', '9uX1TEclicks2.json'])
-          @url = Bitly::Url.new(@bitly, 'hash' => '9uX1TE')
+          @url = Bitlyr::Url.new(@client, 'hash' => '9uX1TE')
         end
         should "get clicks when global clicks is called" do
           assert_equal 81, @url.global_clicks
@@ -54,7 +54,7 @@ class TestUrl < Test::Unit::TestCase
       context "getting info" do
         setup do
           stub_get("http://api.bit.ly/v3/info?hash=9uX1TE&login=test_account&apiKey=test_key", ['9uX1TEinfo.json', '9uX1TEinfo2.json'])
-          @url = Bitly::Url.new(@bitly, 'hash' => '9uX1TE')
+          @url = Bitlyr::Url.new(@client, 'hash' => '9uX1TE')
         end
         should "get info when title is called" do
           assert_equal "A title", @url.title
@@ -75,11 +75,11 @@ class TestUrl < Test::Unit::TestCase
         end
         context "steps to prevent an infinite loop" do
           should "doesn't get info if the title is an empty string" do
-            @url = Bitly::Url.new(@bitly, 'hash' => '9uX1TE', 'title' => '')
+            @url = Bitlyr::Url.new(@client, 'hash' => '9uX1TE', 'title' => '')
             assert_equal "", @url.title
           end
           should "doesn't get info if the title is explicitly set to nil" do
-            @url = Bitly::Url.new(@bitly, 'hash' => '9uX1TE', 'title' => nil)
+            @url = Bitlyr::Url.new(@client, 'hash' => '9uX1TE', 'title' => nil)
             assert_equal "", @url.title
           end
         end
@@ -87,11 +87,11 @@ class TestUrl < Test::Unit::TestCase
       context "getting referrers" do
         setup do
           stub_get("http://api.bit.ly/v3/referrers?hash=djZ9g4&login=test_account&apiKey=test_key", ['referrer_hash.json', 'referrer_hash2.json'])
-          @url = Bitly::Url.new(@bitly, 'hash' => 'djZ9g4')
+          @url = Bitlyr::Url.new(@client, 'hash' => 'djZ9g4')
         end
         should 'get referrers when called' do
           assert_instance_of Array, @url.referrers
-          assert_instance_of Bitly::Referrer, @url.referrers.first
+          assert_instance_of Bitlyr::Referrer, @url.referrers.first
           assert_equal 'direct', @url.referrers.first.referrer
           assert_equal 62, @url.referrers.first.clicks
         end
@@ -104,11 +104,11 @@ class TestUrl < Test::Unit::TestCase
       context "getting countries" do
         setup do
           stub_get("http://api.bit.ly/v3/countries?hash=djZ9g4&login=test_account&apiKey=test_key", ['country_hash.json', 'country_hash2.json'])
-          @url = Bitly::Url.new(@bitly, 'hash' => 'djZ9g4')
+          @url = Bitlyr::Url.new(@client, 'hash' => 'djZ9g4')
         end
         should 'get countries when called' do
           assert_instance_of Array, @url.countries
-          assert_instance_of Bitly::Country, @url.countries.first
+          assert_instance_of Bitlyr::Country, @url.countries.first
           assert_equal 'US', @url.countries.first.country
           assert_equal 58, @url.countries.first.clicks
         end
@@ -122,7 +122,7 @@ class TestUrl < Test::Unit::TestCase
         setup do
           @short_url = "http://j.mp/9DguyN"
           stub_get("http://api.bit.ly/v3/clicks_by_minute?shortUrl=#{CGI.escape(@short_url)}&login=test_account&apiKey=test_key", ['clicks_by_minute1_url.json', 'clicks_by_minute2_url.json'])
-          @url = Bitly::Url.new(@bitly, 'short_url' => @short_url)
+          @url = Bitlyr::Url.new(@client, 'short_url' => @short_url)
         end
         should 'get clicks_by_minute when called' do
           assert_instance_of Array, @url.clicks_by_minute
@@ -138,11 +138,11 @@ class TestUrl < Test::Unit::TestCase
         setup do
           @hash = "9DguyN"
           stub_get("http://api.bit.ly/v3/clicks_by_day?hash=#{@hash}&login=test_account&apiKey=test_key", ['clicks_by_day1.json', 'clicks_by_day2.json'])
-          @url = Bitly::Url.new(@bitly, 'hash' => @hash)
+          @url = Bitlyr::Url.new(@client, 'hash' => @hash)
         end
         should 'get clicks_by_day when called' do
           assert_instance_of Array, @url.clicks_by_day
-          assert_instance_of Bitly::Day, @url.clicks_by_day[0]
+          assert_instance_of Bitlyr::Day, @url.clicks_by_day[0]
         end
         should 'force update when told to' do
           assert_equal 1, @url.clicks_by_day[0].clicks

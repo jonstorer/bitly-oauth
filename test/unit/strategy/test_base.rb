@@ -4,8 +4,8 @@ class TestBase < Test::Unit::TestCase
   context "a request" do
     context "when successful" do
       setup do
-        Bitly::Response.stubs(:new => stub('response', :success? => true, :body => {}))
-        @strategy = Bitly::Strategy::Base.new
+        Bitlyr::Response.stubs(:new => stub('response', :success? => true, :body => {}))
+        @strategy = Bitlyr::Strategy::Base.new
       end
       should "should proxy the request to run_request" do
         @strategy.expects(:run_request).once
@@ -15,18 +15,18 @@ class TestBase < Test::Unit::TestCase
         @strategy.stubs(:run_request).with("these", "args")
         @strategy.request("these", "args")
       end
-      should "return the body of the bitly response" do
+      should "return the body of the bitlyr response" do
         @strategy.stubs(:run_request => true)
         assert_equal @strategy.request, {}
       end
     end
     context "when unsuccessful" do
-      should "raise a Bitly Error" do
+      should "raise a Bitlyr Error" do
         response = stub('response', :success? => false, :reason => "reason", :status => 500)
-        Bitly::Response.stubs(:new => response)
-        strategy = Bitly::Strategy::Base.new
+        Bitlyr::Response.stubs(:new => response)
+        strategy = Bitlyr::Strategy::Base.new
         strategy.stubs(:run_request => true)
-        assert_raise BitlyError do
+        assert_raise BitlyrError do
           strategy.request
         end
       end
@@ -34,7 +34,7 @@ class TestBase < Test::Unit::TestCase
   end
   context "run_request" do
     should "raise a Runtime Error" do
-      strategy = Bitly::Strategy::Base.new
+      strategy = Bitlyr::Strategy::Base.new
       assert_raise RuntimeError do
         strategy.send :run_request
       end
@@ -43,8 +43,8 @@ class TestBase < Test::Unit::TestCase
   context "validating a login and apiKey" do
     context "with valid login and apiKey" do
       setup do
-        Bitly::Response.stubs(:new => stub('response', :success? => true, :body => {'valid' => 1}))
-        @strategy = Bitly::Strategy::Base.new
+        Bitlyr::Response.stubs(:new => stub('response', :success? => true, :body => {'valid' => 1}))
+        @strategy = Bitlyr::Strategy::Base.new
         @strategy.expects(:run_request).once
       end
       should "return true when calling validate" do
@@ -56,8 +56,8 @@ class TestBase < Test::Unit::TestCase
     end
     context "with an invalid login and apiKey" do
       setup do
-        Bitly::Response.stubs(:new => stub('response', :success? => true, :body => {'valid' => 0}))
-        @strategy = Bitly::Strategy::Base.new
+        Bitlyr::Response.stubs(:new => stub('response', :success? => true, :body => {'valid' => 0}))
+        @strategy = Bitlyr::Strategy::Base.new
         @strategy.expects(:run_request).once
       end
       should "return false when calling validate" do

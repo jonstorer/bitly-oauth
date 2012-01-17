@@ -1,4 +1,4 @@
-module Bitly
+module Bitlyr
   class Country
     attr_reader :clicks, :country
 
