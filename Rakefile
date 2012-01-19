@@ -3,14 +3,14 @@ require 'rake'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
-  gem.name = "bitlyr"
+  gem.name = "bitly_oauth"
   gem.summary = "A ruby wrapper for the bit.ly API"
   gem.description = <<-DESCRIPTION
 A ruby wrapper for version 3 of the bit.ly API
 Supports Login/ApiKey & OAuth authentication
 DESCRIPTION
   gem.email = "jonathon.scott.storer@gmail.com"
-  gem.homepage = "http://github.com/jonstorer/bitlyr"
+  gem.homepage = "http://github.com/jonstorer/bitly_oauth"
   gem.authors = ["jonstorer"]
   gem.add_dependency 'httparty', ">= 0.7.6"
   gem.add_dependency 'oauth2', '>= 0.1.1'
@@ -36,7 +36,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "bitlyr #{version}"
+  rdoc.title = "bitly_oauth #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

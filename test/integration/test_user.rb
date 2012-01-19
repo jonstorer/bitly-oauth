@@ -3,9 +3,9 @@ require 'test_helper'
 class TestUser < Test::Unit::TestCase
   context "with an access_token" do
     setup do
-      consumer     = Bitlyr::Strategy::OAuth.new('consumer_token', 'consumer_secret')
-      access_token = consumer.get_access_token_from_token('token')
-      @user        = Bitlyr::User.new(access_token)
+      client       = BitlyOAuth::Client.new('client_id', 'client_secret')
+      access_token = client.get_access_token_from_token('token')
+      @user        = BitlyOAuth::User.new(access_token)
     end
 
     context 'referrers' do
@@ -17,7 +17,7 @@ class TestUser < Test::Unit::TestCase
       should 'return an array of arrays of referrers' do
         assert_kind_of Array, @referrers
         assert_kind_of Array, @referrers.first
-        assert_kind_of Bitlyr::Referrer, @referrers.first.first
+        assert_kind_of BitlyOAuth::Referrer, @referrers.first.first
       end
 
       should 'return data about the referrer' do
@@ -36,7 +36,7 @@ class TestUser < Test::Unit::TestCase
       should 'return an array of arrays of countries' do
         assert_kind_of Array, @countries
         assert_kind_of Array, @countries.first
-        assert_kind_of Bitlyr::Country, @countries.first.first
+        assert_kind_of BitlyOAuth::Country, @countries.first.first
       end
 
       should 'return data about the country' do
@@ -54,7 +54,7 @@ class TestUser < Test::Unit::TestCase
 
       should 'return an array of days' do
         assert_kind_of Array, @clicks
-        assert_kind_of Bitlyr::Day, @clicks.first
+        assert_kind_of BitlyOAuth::Day, @clicks.first
       end
 
       should 'return data about the day' do
@@ -85,7 +85,7 @@ class TestUser < Test::Unit::TestCase
 
       should 'get an array of realtime links' do
         assert_kind_of Array, @realtime_links
-        assert_kind_of Bitlyr::RealtimeLink, @realtime_links.first
+        assert_kind_of BitlyOAuth::RealtimeLink, @realtime_links.first
       end
 
       should 'get the data for the realtime links' do

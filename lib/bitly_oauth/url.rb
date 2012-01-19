@@ -1,7 +1,5 @@
-module Bitlyr
+module BitlyOAuth
 
-  # Url objects should only be created by the client object as it collects the correct information
-  # from the API.
   class Url
     attr_reader :short_url, :long_url, :user_hash, :global_hash, :referrers, :countries
 
@@ -18,11 +16,11 @@ module Bitlyr
       @user_clicks   = options['user_clicks']
       @global_clicks = options['global_clicks']
 
-      @referrers = options['referrers'].map{|referrer| Bitlyr::Referrer.new(referrer) } if options['referrers']
-      @countries = options['countries'].map{|country| Bitlyr::Country.new(country) } if options['countries']
+      @referrers = options['referrers'].map{|referrer| BitlyOAuth::Referrer.new(referrer) } if options['referrers']
+      @countries = options['countries'].map{|country| BitlyOAuth::Country.new(country) } if options['countries']
 
       if options['clicks'] && options['clicks'][0].is_a?(Hash)
-        @clicks_by_day = options['clicks'].map{|day| Bitlyr::Day.new(day)}
+        @clicks_by_day = options['clicks'].map{|day| BitlyOAuth::Day.new(day)}
       else
         @clicks_by_minute = options['clicks']
       end
@@ -69,7 +67,10 @@ module Bitlyr
     # IF there is no referrer or <tt>:force => true</tt> is passed,
     # updates the referrers and returns them
     def referrers(options={})
-      update_referrers if @referrers.nil? || options[:force]
+      if @referrers.nil? || options[:force]
+        full_url = @client.referrers(@user_hash || @short_url)
+        @referrers = full_url.referrers
+      end
       @referrers
     end
 
@@ -77,7 +78,10 @@ module Bitlyr
     # IF there is no country or <tt>:force => true</tt> is passed,
     # updates the countries and returns them
     def countries(options={})
-      update_countries if @countries.nil? || options[:force]
+      if @countries.nil? || options[:force]
+        full_url = @client.countries(@user_hash || @short_url)
+        @countries = full_url.countries
+      end
       @countries
     end
 
@@ -109,16 +113,6 @@ module Bitlyr
       full_url = @client.info(@user_hash || @short_url)
       @created_by = full_url.created_by
       @title = full_url.title
-    end
-
-    def update_referrers
-      full_url = @client.referrers(@user_hash || @short_url)
-      @referrers = full_url.referrers
-    end
-
-    def update_countries
-      full_url = @client.countries(@user_hash || @short_url)
-      @countries = full_url.countries
     end
   end
 end

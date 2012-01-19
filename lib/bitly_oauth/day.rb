@@ -1,4 +1,4 @@
-module Bitlyr
+module BitlyOAuth
 
   # Day objects are created by the clicks_by_day method of a url
   class Day

@@ -3,7 +3,7 @@ require 'test_helper'
 class TestMissingUrl < Test::Unit::TestCase
   context "a url" do
     setup do
-      @url = Bitlyr::MissingUrl.new
+      @url = BitlyOAuth::MissingUrl.new
     end
     [:short_url, :user_hash, :long_url, :error].each do |method|
       should "respond to #{method}" do
@@ -13,10 +13,10 @@ class TestMissingUrl < Test::Unit::TestCase
   end
   context "#new" do
     setup do
-      @url = Bitlyr::MissingUrl.new({ 'short_url' => 'short url',
-                                     'hash'      => 'hash',
-                                     'long_url'  => 'long url',
-                                     'error'     => 'error' })
+      @url = BitlyOAuth::MissingUrl.new({ 'short_url' => 'short url',
+                                          'hash'      => 'hash',
+                                          'long_url'  => 'long url',
+                                          'error'     => 'error' })
     end
     should "return the short url" do
       assert_equal 'short url', @url.short_url

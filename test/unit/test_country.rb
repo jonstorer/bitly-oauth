@@ -3,16 +3,15 @@ require 'test_helper'
 class TestCountry < Test::Unit::TestCase
   context "a country" do
     setup do
-      @country = Bitlyr::Country.new
+      @country = BitlyOAuth::Country.new
     end
 
     [:clicks, :country].each do |method|
       should "respond to #{method}" do
         assert_respond_to @country, method
       end
-
       should "set #{method} when initializing" do
-        country = Bitlyr::Country.new(method.to_s => 'test')
+        country = BitlyOAuth::Country.new(method.to_s => 'test')
         assert_equal 'test', country.send(method)
       end
     end
