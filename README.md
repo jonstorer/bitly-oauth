@@ -1,4 +1,4 @@
-# bitlyr
+# bitly-oauth
 
 ## DESCRIPTION:
 
@@ -8,68 +8,58 @@ A Ruby API for [http://bit.ly](http://bit.ly)
 
 ## NOTE:
 
-Bitly recently released their version 3 API. From this 0.9.0 release, the gem with only use the version 3 API.
+BitlyOAuth supports version 3 of the API as well as OAuth authenticate for user access.
 
-The gem will continue to support both Username and ApiKey as well as the OAuth Client ID and Client Secret
+To use, you will need a client id and client secret. Get yours at [http://bitly.com/a/account](http://bitly.com/a/account).
 
-To use, you will need to select a authorization strategy:
+    client = BitlyOAuth::Client.new(client_id, client_secret)
 
-    strategy = Bitlyr::Strategy::ApiKey.new(username, api_key)
-
-or
-
-    strategy = Bitlyr::Strategy::OAuth.new(client_id, client_secret)
-
-Once you have a strategy, you can initialize your client:
-
-    client = Bitlyr::Client.new(strategy)
-
-which will give you a ``Bitlyr::Client`` which provides access to the version 3 endpoints (``shorten``, ``expand``, ``clicks``, ``validate`` and ``bitly_pro_domain``). See [http://api.bit.ly](http://api.bit.ly) for details.
-
+With a ``BitlyOAuth::Client`` you have access to the following API endpoints:
+``shorten``, ``expand``, ``lookup``, ``info``, ``clicks``, ``clicks_by_minute``,
+``clicks_by_day``, ``countries``, ``referrers``, ``referring_domains``,
+``validate``, ``bitly_pro_domain``  See [http://bit.ly/apidocs](http://bit.ly/apidocs) for details.
 
 ## INSTALLATION:
 
-    gem install bitlyr
+    gem install bitly-oauth
 
 ## USAGE:
 
-Please see the Bit.ly API documentation [http://api.bit.ly](http://api.bit.ly) for details on the V3 API.
+Please see the Bit.ly API documentation [http://bit.ly/apidocs](http://bit.ly/apidocs) for details on the V3 API.
 
-Create a Bitlyr client using your username and api key as follows:
+You can initialize a client through the following shortcut as well:
 
-    client = Bitlyr.new(:login => "login", :api_key => "api_key")
-
-or
-
-    client = Bitlyr.new(:client_id => "client id", :client_secret => "client secret", :token => "token")
+    client = BitlyOAuth.new("client id", "client secret")
+    client.set_access_token_from_token('token')
 
 You can then use that client to shorten or expand urls or return more information or statistics as so:
 
     client.shorten('http://www.google.com')
     client.shorten('http://www.google.com', :history => 1) # adds the url to the api user's history
+
     client.expand('wQaT') || client.expand('http://bit.ly/wQaT')
     client.info('wQaT')   || client.info('http://bit.ly/wQaT')
-    client.stats('wQaT')  || client.info('http://bit.ly/wQaT')
+    client.stats('wQaT')  || client.stats('http://bit.ly/wQaT')
 
 Each can be used in all the methods described in the API docs, the shorten function, for example, takes a url or an array of urls.
 
-All four functions return a ``Bitlyr::Url`` object (or an array of ``Bitlyr::Url`` objects if you supplied an array as the input). You can then get all the information required from that object.
+Then functions ``shorten``, ``expand``, ``info``, and ``stats`` return a ``BitlyOAuth::Url`` object (or an array of ``BitlyOAuth::Url`` objects if you supplied an array as the input). You can then get all the information required from that object.
 
-    url = client.shorten('http://www.google.com') #=> Bitlyr::Url
+    url = client.shorten('http://www.google.com') #=> BitlyOAuth::Url
 
-    url.clicks_by_day    #=> an array of ``Bitlyr::Day``s
-    url.countries        #=> an array of ``Bitlyr::Country``s
-    url.referrers        #=> an array of ``Bitlyr::Referrer``s
-    url.clicks_by_minute #=> an array of 60 integers representing clicks over the last 60 minutes
-    url.created_by       #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/info
-    url.global_clicks    #=> integer / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/clicks
-    url.global_hash      #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/info
-    url.long_url         #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/expand
-    url.new_hash?        #=> boolean / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/shorten
-    url.short_url        #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/shorten
-    url.title            #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/info
-    url.user_clicks      #=> integer / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/clicks
-    url.user_hash        #=> string  / http://code.google.com/p/bitly-api/wiki/ApiDocumentation#/v3/expand
+    url.clicks_by_day    #=> an array of ``BitlyOAuth::Day``s
+    url.countries        #=> an array of ``BitlyOAuth::Country``s
+    url.referrers        #=> an array of ``BitlyOAuth::Referrer``s
+    url.clicks_by_minute #=> an array of 60 integers representing click counts over the last 60 minutes
+    url.created_by       #=> string  / http://bit.ly/apidocs#/v3/info
+    url.global_clicks    #=> integer / http://bit.ly/apidocs#/v3/clicks
+    url.global_hash      #=> string  / http://bit.ly/apidocs#/v3/info
+    url.long_url         #=> string  / http://bit.ly/apidocs#/v3/expand
+    url.new_hash?        #=> boolean / http://bit.ly/apidocs#/v3/shorten
+    url.short_url        #=> string  / http://bit.ly/apidocs#/v3/shorten
+    url.title            #=> string  / http://bit.ly/apidocs#/v3/info
+    url.user_clicks      #=> integer / http://bit.ly/apidocs#/v3/clicks
+    url.user_hash        #=> string  / http://bit.ly/apidocs#/v3/expand
 
 ## LICENSE:
 

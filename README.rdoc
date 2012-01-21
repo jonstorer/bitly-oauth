@@ -8,22 +8,20 @@ http://api.bit.ly
 
 == INSTALLATION:
 
-<tt>gem install bitly</tt>
+<tt>gem install bitly-oauth</tt>
 
 == USAGE:
 
-Create a client using your username and API key from http://bit.ly
+Create a client using your client id and client secret from http://bit.ly
 
-<tt>bitly = Bitly.new(username, api_key)</tt>
+<tt>client = BitlyOAuth.new(client_id, client_secret)</tt>
 
 Then use that client to shorten or expand urls and hashes.
 
-<tt>bitly.shorten('http://google.com')</tt>
-
-See the {documentation}[http://philnash.github.com/bitly/rdoc/index.html] for more details.
+<tt>client.shorten('http://google.com')</tt>
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
@@ -34,4 +32,4 @@ See the {documentation}[http://philnash.github.com/bitly/rdoc/index.html] for mo
 
 == Copyright
 
-Copyright (c) 2010 philnash. See LICENSE for details.
+Copyright (c) 2010 jonstorer. See LICENSE for details.
