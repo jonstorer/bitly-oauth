@@ -20,6 +20,7 @@ class TestUrl < Test::Unit::TestCase
        :title,
        :created_by,
        :referrers,
+       :referring_domains,
        :countries,
        :clicks_by_minute,
        :clicks_by_day].each do |method|
@@ -100,6 +101,24 @@ class TestUrl < Test::Unit::TestCase
           assert_equal 62, @url.referrers.first.clicks
           assert_equal 62, @url.referrers.first.clicks
           assert_equal 63, @url.referrers(:force => true).first.clicks
+        end
+      end
+      context "getting referring_domains" do
+        should 'get referring_domains when called' do
+          @client.stubs(:referring_domains => [ BitlyOAuth::ReferringDomain.new( {'domain' => 'direct', 'clicks' => 62} ) ] )
+          url = BitlyOAuth::Url.new(@client, 'hash' => 'djZ9g4')
+          assert_instance_of Array, url.referring_domains
+          assert_instance_of BitlyOAuth::ReferringDomain, url.referring_domains.first
+          assert_equal 'direct', url.referring_domains.first.domain
+          assert_equal 62, url.referring_domains.first.clicks
+        end
+        should 'force update when told to' do
+          @client.stubs(:referring_domains => [ BitlyOAuth::ReferringDomain.new( {'domain' => 'direct', 'clicks' => 62} ) ] )
+          url = BitlyOAuth::Url.new(@client, 'hash' => 'djZ9g4')
+          assert_equal 62, url.referring_domains.first.clicks
+          url.instance_eval{ @client.stubs(:referring_domains => [ BitlyOAuth::ReferringDomain.new( {'domain' => 'direct', 'clicks' => 63} ) ] ) }
+          assert_equal 62, url.referring_domains.first.clicks
+          assert_equal 63, url.referring_domains(:force => true).first.clicks
         end
       end
       context "getting countries" do

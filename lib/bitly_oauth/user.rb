@@ -5,6 +5,7 @@ module BitlyOAuth
   #     client = BitlyOAuth::Client.new(consumer_token, consumer_secret)
   #     client.authorize_url(redirect_url)
   #     #=> "https://bitly.com/oauth/authorize?client_id=id&type=code&redirect_uri=http%3A%2F%2Ftest.local%2Fbitly-oauth%2Fauth"
+  #
   # Redirect your users to this url, when they authorize your application
   # they will be redirected to the url you provided with a code parameter.
   # Use that parameter, and the exact same redirect url as follows:

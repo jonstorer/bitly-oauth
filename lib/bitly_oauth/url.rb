@@ -74,6 +74,16 @@ module BitlyOAuth
       @referrers
     end
 
+    # If the url already has referring_domains data, return it.
+    # IF there is no referring_domains or <tt>:force => true</tt> is passed,
+    # updates the referring_domains and returns them
+    def referring_domains(options={})
+      if @referring_domains.nil? || options[:force]
+        @referring_domains = @client.referring_domains(@short_url)
+      end
+      @referring_domains
+    end
+
     # If the url already has country data, return it.
     # IF there is no country or <tt>:force => true</tt> is passed,
     # updates the countries and returns them
