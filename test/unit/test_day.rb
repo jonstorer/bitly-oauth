@@ -16,7 +16,7 @@ class TestDay < Test::Unit::TestCase
     end
     should "set day to a time object when initialising" do
       day = BitlyOAuth::Day.new('day_start' => 1290488400)
-      assert_equal Time.parse('2010/11/23'), day.day_start
+      assert_equal Time.parse('2010-11-23 05:00:00 +0000'), day.day_start
     end
   end
 end

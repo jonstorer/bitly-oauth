@@ -673,7 +673,7 @@ class TestClient < Test::Unit::TestCase
           end
           should "return a Time for the day" do
             assert_instance_of Time, @urls[0].clicks_by_day[0].day_start
-            assert_equal Time.parse('2010/11/23'), @urls[0].clicks_by_day[0].day_start
+            assert_equal Time.parse('2010-11-23 05:00:00 +0000'), @urls[0].clicks_by_day[0].day_start
           end
           should 'return the number of clicks for that day' do
             assert_equal 1, @urls[0].clicks_by_day[0].clicks

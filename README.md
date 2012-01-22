@@ -1,5 +1,9 @@
 # bitly-oauth
 
+## STATUS
+
+[![Build Status](https://secure.travis-ci.org/jonstorer/bitly-oauth.png)](http://travis-ci.org/jonstorer/bitly-oauth)
+
 ## DESCRIPTION:
 
 A Ruby API for [http://bit.ly](http://bit.ly)
