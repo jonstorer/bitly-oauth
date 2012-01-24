@@ -11,7 +11,7 @@ module BitlyOAuth
     end
 
     def authorize_url(redirect_url)
-      client.auth_code.authorize_url(:redirect_uri => redirect_url).gsub(/api-ssl.bit.ly/,'bitly.com')
+      client.auth_code.authorize_url(:redirect_uri => redirect_url)
     end
 
     def get_access_token_from_code(code, redirect_url)
@@ -135,7 +135,13 @@ module BitlyOAuth
     end
 
     def client
-      @client ||= ::OAuth2::Client.new(@client_id, @client_secret, :site => BASE_URL, :token_url => '/oauth/access_token')
+      @client ||= begin
+        ::OAuth2::Client.new(@client_id,
+                            @client_secret,
+                            :site          => BASE_URL,
+                            :authorize_url => 'https://bitly.com/oauth/authorize',
+                            :token_url     => '/oauth/access_token')
+      end
     end
 
     def access_token
