@@ -1,7 +1,7 @@
 module BitlyOAuth
   class Client
-    extend Forwardable
-    delegate [ :get, :post ] => :access_token
+    include HTTParty
+    base_uri 'https://api-ssl.bit.ly/v3/'
 
     BASE_URL = 'https://api-ssl.bit.ly/v3/'
 
@@ -150,6 +150,20 @@ module BitlyOAuth
 
     def key_for(input)
       input.match(/^http:\/\//) ? :shortUrl : :hash
+    end
+
+    def get(path, params = {})
+      response = self.class.get("/#{path}", query(params))
+      response = BitlyOAuth::Response.new(response)
+      if response.success?
+        response.body
+      else
+        raise BitlyOAuth::Error.new(response)
+      end
+    end
+
+    def query(params)
+      { :query => { :access_token => access_token.token }.merge(params).to_query }
     end
   end
 end

@@ -22,7 +22,7 @@ class TestResponse < Test::Unit::TestCase
     end
     should "return the status code" do
       response = BitlyOAuth::Response.new(stub('oauth', :parsed => {'status_code' => 'some status code'}))
-      assert_equal 'some status code', response.status,
+      assert_equal 'some status code', response.status
     end
     should "return the response body" do
       response = BitlyOAuth::Response.new(stub('oauth', :parsed => { 'data' => {} } ))
@@ -60,7 +60,7 @@ class TestResponse < Test::Unit::TestCase
     end
     should "return the status code" do
       response = BitlyOAuth::Response.new(stub(:parsed_response => { 'status_code' => 'some status code' }))
-      assert_equal 'some status code', response.status,
+      assert_equal 'some status code', response.status
     end
     should "return the response body" do
       response = BitlyOAuth::Response.new(stub(:parsed_response => { 'data' => {} } ))

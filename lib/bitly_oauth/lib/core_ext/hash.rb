@@ -1,6 +1,15 @@
 class Hash
   def to_query
-    map {|k, v|"#{k}=#{v}"}.sort * '&'
+    map do |key, value|
+      case value
+      when Array
+        value.map do |v|
+          "#{key}=#{CGI.escape(v.to_s)}"
+        end.join('&')
+      else
+        "#{key}=#{CGI.escape(value.to_s)}"
+      end
+    end.sort * '&'
   end
 
   def stringify_keys!

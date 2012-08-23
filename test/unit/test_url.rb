@@ -141,7 +141,7 @@ class TestUrl < Test::Unit::TestCase
       context "getting clicks by minute" do
         setup do
           @short_url = "http://j.mp/9DguyN"
-          stub_get("https://api-ssl.bit.ly/v3/clicks_by_minute?shortUrl=#{CGI.escape(@short_url)}&access_token=token", ['clicks_by_minute1_url.json', 'clicks_by_minute2_url.json'])
+          stub_get("https://api-ssl.bit.ly/v3/clicks_by_minute?access_token=token&shortUrl=#{CGI.escape(@short_url)}", ['clicks_by_minute1_url.json', 'clicks_by_minute2_url.json'])
           @url = BitlyOAuth::Url.new(@client, 'short_url' => @short_url)
         end
         should 'get clicks_by_minute when called' do

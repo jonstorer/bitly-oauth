@@ -48,10 +48,8 @@ class TestClient < Test::Unit::TestCase
     end
     context "requests to the bitly api" do
       setup do
-        token = stub(:get => { 'bitly_pro_domain' => true },
-                     :token   => 'token' )
-        BitlyOAuth::AccessToken.stubs(:new => token)
         @client.set_access_token_from_token('token')
+        stub_get('https://api-ssl.bit.ly/v3/bitly_pro_domain?access_token=token&domain=http%3A%2F%2Fpro.domain%2F', 'bitly_pro_domain.json')
       end
       context "bitly_pro_domain" do
         should 'return true when it is a bitly pro domain' do
@@ -67,10 +65,9 @@ class TestClient < Test::Unit::TestCase
   end
   context "#referring_domains" do
     setup do
-      token = stub(:get => { "referring_domains" => [ {'domain' => 'direct', 'clicks' => 700} ] } )
-      BitlyOAuth::AccessToken.stubs(:new => token)
       @client = BitlyOAuth::Client.new('id', 'secret')
       @client.set_access_token_from_token('token')
+      stub_get('https://api-ssl.bit.ly/v3/link/referring_domains?access_token=token&link=http%3A%2F%2Fbit.ly%2Fsomelink%2F', 'referring_domains.json')
     end
     should "return an array" do
       assert @client.referring_domains('http://bit.ly/somelink/').is_a?(Array)

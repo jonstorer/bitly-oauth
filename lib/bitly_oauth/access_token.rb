@@ -17,7 +17,7 @@ module BitlyOAuth
 
     private
     def request(verb, method, options={})
-      response = access_token.send(verb, method, :params => params(options), :parse => :json)
+      response = access_token.send(verb, method.to_s, :params => params(options), :parse => :json)
       response = BitlyOAuth::Response.new(response)
       if response.success?
         response.body
