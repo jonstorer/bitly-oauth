@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bitly-oauth (0.2.2)
+    bitly-oauth (0.2.3)
       httparty
       oauth2
 
