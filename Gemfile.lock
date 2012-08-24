@@ -3,7 +3,6 @@ PATH
   specs:
     bitly-oauth (0.2.2)
       httparty
-      httparty
       oauth2
 
 GEM

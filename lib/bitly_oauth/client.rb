@@ -163,7 +163,7 @@ module BitlyOAuth
     end
 
     def query(params)
-      { :query => { :access_token => access_token.token }.merge(params).to_query }
+      { :query => ParamsHash[ { :access_token => access_token.token }.merge(params) ].to_query }
     end
   end
 end
