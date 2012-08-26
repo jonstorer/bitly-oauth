@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "bitly_oauth/version"
+require "bitly-oauth/version"
 
 Gem::Specification.new do |s|
   s.name             = "bitly-oauth"

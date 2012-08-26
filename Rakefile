@@ -1,6 +1,6 @@
 #!/usr/bin/env rake
 $:.push File.expand_path("../lib", __FILE__)
-require "bitly_oauth/version"
+require "bitly-oauth/version"
 
 require "bundler/gem_tasks"
 require 'rake/testtask'
