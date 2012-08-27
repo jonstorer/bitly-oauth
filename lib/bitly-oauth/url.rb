@@ -4,15 +4,15 @@ module BitlyOAuth
 
     def initialize(client, options = {})
       @client        = client
+      @short_url     = options['url']           || options['short_url'] || "http://bit.ly/#{@user_hash}"
+      @user_hash     = options['hash']          || options['user_hash']
+      @title         = options['title']
       @new_hash      = options['new_hash'] == 1
       @long_url      = options['long_url']
       @created_by    = options['created_by']
       @global_hash   = options['global_hash']
       @user_clicks   = options['user_clicks']
       @global_clicks = options['global_clicks']
-      @title         = options['title']
-      @user_hash     = options['hash']            || options['user_hash']
-      @short_url     = options['url']             || options['short_url'] || "http://bit.ly/#{@user_hash}"
 
       @referrers = options['referrers'].map do |referrer|
         BitlyOAuth::Referrer.new(referrer)
