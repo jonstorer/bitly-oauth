@@ -1,9 +1,7 @@
 module BitlyOAuth
-
   class Url
     attr_reader :short_url, :long_url, :user_hash, :global_hash, :referrers, :countries
 
-    # Initialize with a bitly client and optional hash to fill in the details for the url.
     def initialize(client, options = {})
       @client        = client
       @new_hash      = options['new_hash'] == 1
@@ -33,46 +31,30 @@ module BitlyOAuth
       end
     end
 
-    # Returns true if the user hash was created first for this call
     def new_hash?
       @new_hash
     end
 
-    # If the url already has click statistics, returns the user clicks.
-    # IF there are no click statistics or <tt>:force => true</tt> is passed,
-    # updates the stats and returns the user clicks
     def user_clicks(options={})
       update_clicks_data if @user_clicks.nil? || options[:force]
       @user_clicks
     end
 
-    # If the url already has click statistics, returns the global clicks.
-    # IF there are no click statistics or <tt>:force => true</tt> is passed,
-    # updates the stats and returns the global clicks
     def global_clicks(options={})
       update_clicks_data if @global_clicks.nil? || options[:force]
       @global_clicks
     end
 
-    # If the url already has the title, return it.
-    # IF there is no title or <tt>:force => true</tt> is passed,
-    # updates the info and returns the title
     def title(options={})
       update_info if @title.nil? || options[:force]
       @title
     end
 
-    # If the url already has the creator, return it.
-    # IF there is no creator or <tt>:force => true</tt> is passed,
-    # updates the info and returns the creator
     def created_by(options={})
       update_info if @created_by.nil? || options[:force]
       @created_by
     end
 
-    # If the url already has referrer data, return it.
-    # IF there is no referrer or <tt>:force => true</tt> is passed,
-    # updates the referrers and returns them
     def referrers(options={})
       if @referrers.nil? || options[:force]
         full_url = @client.referrers(@user_hash || @short_url)
@@ -81,9 +63,6 @@ module BitlyOAuth
       @referrers
     end
 
-    # If the url already has referring_domains data, return it.
-    # IF there is no referring_domains or <tt>:force => true</tt> is passed,
-    # updates the referring_domains and returns them
     def referring_domains(options={})
       if @referring_domains.nil? || options[:force]
         @referring_domains = @client.referring_domains(@short_url)
@@ -91,9 +70,6 @@ module BitlyOAuth
       @referring_domains
     end
 
-    # If the url already has country data, return it.
-    # IF there is no country or <tt>:force => true</tt> is passed,
-    # updates the countries and returns them
     def countries(options={})
       if @countries.nil? || options[:force]
         full_url = @client.countries(@user_hash || @short_url)

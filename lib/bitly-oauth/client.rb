@@ -76,6 +76,13 @@ module BitlyOAuth
 
     private
 
+    def get_single_method(method, input)
+      raise ArgumentError.new("This method only takes a hash or url input") unless input.is_a? String
+
+      response = v3(method, key_for(input) => input.to_a)
+      BitlyOAuth::Url.new(self, response)
+    end
+
     def get_method(method, input, options={})
       options = ParamsHash[ options ]
       options.symbolize_keys!
@@ -101,17 +108,6 @@ module BitlyOAuth
       results.length > 1 ? results : results[0]
     end
 
-    def get_single_method(method, input)
-      raise ArgumentError.new("This method only takes a hash or url input") unless input.is_a? String
-
-      response = v3(method, key_for(input) => input.to_a)
-      BitlyOAuth::Url.new(self, response)
-    end
-
-    def access_token
-      @access_token
-    end
-
     def key_for(input)
       input.match(/^http:\/\//) ? :shortUrl : :hash
     end
@@ -132,7 +128,7 @@ module BitlyOAuth
     end
 
     def query(params)
-      { :query => ParamsHash[ { :access_token => access_token }.merge(params) ].to_query }
+      { :query => ParamsHash[ { :access_token => @access_token }.merge(params) ].to_query }
     end
   end
 end

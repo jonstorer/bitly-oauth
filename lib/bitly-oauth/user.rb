@@ -1,9 +1,5 @@
 module BitlyOAuth
-
   class User
-    include HTTParty
-    base_uri 'https://api-ssl.bit.ly/v3/'
-
     def initialize(access_token)
       @access_token = access_token
     end
