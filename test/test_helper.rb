@@ -5,7 +5,7 @@ require 'fakeweb'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'bitly_oauth'
+require 'bitly-oauth'
 
 FakeWeb.allow_net_connect = false
 
