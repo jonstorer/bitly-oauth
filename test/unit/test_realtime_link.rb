@@ -20,7 +20,7 @@ class TestRealtimeLink < Test::Unit::TestCase
     end
     should 'create a url when supplied with a client' do
       realtime_link = BitlyOAuth::RealtimeLink.new('user_hash' => 'sdfidn', 'clicks' => 12)
-      client = BitlyOAuth::Client.new('client_id', 'client_secret')
+      client = BitlyOAuth::Client.new('token')
       url = realtime_link.create_url(client)
       assert_kind_of BitlyOAuth::Url, url
       assert_equal 12, url.user_clicks

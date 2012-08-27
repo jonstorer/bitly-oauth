@@ -6,21 +6,28 @@ module BitlyOAuth
     # Initialize with a bitly client and optional hash to fill in the details for the url.
     def initialize(client, options = {})
       @client        = client
-      @title         = options['title'] || '' if options.key?('title')
-      @new_hash      = (options['new_hash'] == 1)
+      @new_hash      = options['new_hash'] == 1
       @long_url      = options['long_url']
-      @user_hash     = options['hash'] || options['user_hash']
-      @short_url     = options['url'] || options['short_url'] || "http://bit.ly/#{@user_hash}"
       @created_by    = options['created_by']
       @global_hash   = options['global_hash']
       @user_clicks   = options['user_clicks']
       @global_clicks = options['global_clicks']
+      @title         = options['title']
+      @user_hash     = options['hash']            || options['user_hash']
+      @short_url     = options['url']             || options['short_url'] || "http://bit.ly/#{@user_hash}"
 
-      @referrers = options['referrers'].map{|referrer| BitlyOAuth::Referrer.new(referrer) } if options['referrers']
-      @countries = options['countries'].map{|country| BitlyOAuth::Country.new(country) } if options['countries']
+      @referrers = options['referrers'].map do |referrer|
+        BitlyOAuth::Referrer.new(referrer)
+      end if options['referrers']
+
+      @countries = options['countries'].map do |country|
+        BitlyOAuth::Country.new(country)
+      end if options['countries']
 
       if options['clicks'] && options['clicks'][0].is_a?(Hash)
-        @clicks_by_day = options['clicks'].map{|day| BitlyOAuth::Day.new(day)}
+        @clicks_by_day = options['clicks'].map do |day|
+          BitlyOAuth::Day.new(day)
+        end
       else
         @clicks_by_minute = options['clicks']
       end
@@ -114,15 +121,15 @@ module BitlyOAuth
     private
 
     def update_clicks_data
-      full_url = @client.clicks(@user_hash || @short_url)
+      full_url       = @client.clicks(@user_hash || @short_url)
       @global_clicks = full_url.global_clicks
-      @user_clicks = full_url.user_clicks
+      @user_clicks   = full_url.user_clicks
     end
 
     def update_info
-      full_url = @client.info(@user_hash || @short_url)
-      @created_by = full_url.created_by
-      @title = full_url.title
+      url         = @client.info(@user_hash || @short_url)
+      @created_by = url.created_by
+      @title      = url.title || ''
     end
   end
 end

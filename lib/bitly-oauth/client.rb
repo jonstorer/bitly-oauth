@@ -1,51 +1,24 @@
 module BitlyOAuth
   class Client
     include HTTParty
-    base_uri 'https://api-ssl.bit.ly/v3/'
+    base_uri 'https://api-ssl.bit.ly/'
 
-    BASE_URL = 'https://api-ssl.bit.ly/v3/'
-
-    def initialize(client_id, client_secret)
-      @client_id     = client_id
-      @client_secret = client_secret
-    end
-
-    def authorize_url(redirect_url)
-      client.auth_code.authorize_url(:redirect_uri => redirect_url)
-    end
-
-    def get_access_token_from_code(code, redirect_url)
-      access_token = client.auth_code.get_token(code, :redirect_uri => redirect_url, :parse => :query)
-      BitlyOAuth::AccessToken.new(access_token)
-    end
-
-    def set_access_token_from_code(*args)
-      @access_token ||= get_access_token_from_code(*args)
-    end
-
-    def get_access_token_from_token(token, params={})
-      params.stringify_keys!
-      access_token = ::OAuth2::AccessToken.new(client, token, params)
-      BitlyOAuth::AccessToken.new(access_token)
-    end
-
-    def set_access_token_from_token(*args)
-      @access_token ||= get_access_token_from_token(*args)
+    def initialize(access_token)
+      @access_token = access_token
     end
 
     def bitly_pro_domain(domain)
-      get(:bitly_pro_domain, :domain => domain)['bitly_pro_domain']
+      v3(:bitly_pro_domain, :domain => domain)['bitly_pro_domain']
     end
     alias :pro? :bitly_pro_domain
 
-    # Validates a login and api key
     def validate(x_login, x_api_key)
-      get(:validate, :x_login => x_login, :x_apiKey => x_api_key)['valid'] == 1
+      v3(:validate, :x_login => x_login, :x_apiKey => x_api_key)['valid'] == 1
     end
     alias :valid? :validate
 
     def shorten(long_url, options={})
-      response = get(:shorten, { :longUrl => long_url }.merge(options))
+      response = v3(:shorten, { :longUrl => long_url }.merge(options))
       BitlyOAuth::Url.new(self, response)
     end
 
@@ -79,7 +52,7 @@ module BitlyOAuth
     end
 
     def referring_domains(link, options={})
-      response = get('link/referring_domains', :link => link)
+      response = v3('link/referring_domains', :link => link)
       response['referring_domains'].map do |referring_domain|
         BitlyOAuth::ReferringDomain.new(referring_domain)
       end
@@ -87,7 +60,7 @@ module BitlyOAuth
 
     def lookup(input)
       input = input.to_a
-      response = get(:lookup, :url => input)
+      response = v3(:lookup, :url => input)
       results = response['lookup'].inject([]) do |results, url|
         index = input.index(url['long_url'] = url.delete('url'))
         if url['error'].nil?
@@ -104,6 +77,7 @@ module BitlyOAuth
     private
 
     def get_method(method, input, options={})
+      options = ParamsHash[ options ]
       options.symbolize_keys!
       input = input.to_a
 
@@ -111,7 +85,7 @@ module BitlyOAuth
         (options[key_for(i)] ||= []) << i
       end
 
-      response = get(method, options)
+      response = v3(method, options)
 
       results = response[method.to_s].inject([]) do |results, url|
         result_index = input.index(url['short_url'] || url['hash']) || input.index(url['global_hash'])
@@ -130,18 +104,8 @@ module BitlyOAuth
     def get_single_method(method, input)
       raise ArgumentError.new("This method only takes a hash or url input") unless input.is_a? String
 
-      response = get(method, key_for(input) => input.to_a)
+      response = v3(method, key_for(input) => input.to_a)
       BitlyOAuth::Url.new(self, response)
-    end
-
-    def client
-      @client ||= begin
-        ::OAuth2::Client.new(@client_id,
-                            @client_secret,
-                            :site          => BASE_URL,
-                            :authorize_url => 'https://bitly.com/oauth/authorize',
-                            :token_url     => '/oauth/access_token')
-      end
     end
 
     def access_token
@@ -151,6 +115,11 @@ module BitlyOAuth
     def key_for(input)
       input.match(/^http:\/\//) ? :shortUrl : :hash
     end
+
+    def v3(method, options)
+      get("v3/#{method}", options)
+    end
+    public :v3
 
     def get(path, params = {})
       response = self.class.get("/#{path}", query(params))
@@ -163,7 +132,7 @@ module BitlyOAuth
     end
 
     def query(params)
-      { :query => ParamsHash[ { :access_token => access_token.token }.merge(params) ].to_query }
+      { :query => ParamsHash[ { :access_token => access_token }.merge(params) ].to_query }
     end
   end
 end

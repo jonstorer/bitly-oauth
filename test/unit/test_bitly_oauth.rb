@@ -4,7 +4,7 @@ class TestBitlyOAuth < Test::Unit::TestCase
   context "bitly oauth module" do
     context "with a client id and client secret" do
       should "create a new client" do
-        client = BitlyOAuth.new("client_id", "client_secret")
+        client = BitlyOAuth.new('token')
         assert client.is_a?(BitlyOAuth::Client)
       end
     end

@@ -11,7 +11,6 @@ module BitlyOAuth
   end
 end
 
-require 'bitly-oauth/access_token'
 require 'bitly-oauth/client'
 require 'bitly-oauth/country'
 require 'bitly-oauth/day'
@@ -24,5 +23,5 @@ require 'bitly-oauth/response'
 require 'bitly-oauth/url'
 require 'bitly-oauth/user'
 
-require 'bitly-oauth/lib/core_ext/hash'
+require 'bitly-oauth/lib/params_hash'
 require 'bitly-oauth/lib/core_ext/string'

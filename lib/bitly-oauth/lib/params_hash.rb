@@ -1,4 +1,5 @@
-class Hash
+class ParamsHash < Hash
+
   def stringify_keys!
     keys.each do |key|
       self[key.to_s] = delete(key)
@@ -20,9 +21,7 @@ class Hash
   def symbolize_keys
     dup.symbolize_keys!
   end
-end
 
-class ParamsHash < Hash
   def to_query
     map do |key, value|
       case value

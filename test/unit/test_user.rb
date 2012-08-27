@@ -3,9 +3,7 @@ require 'test_helper'
 class TestUser < Test::Unit::TestCase
   context "with an access_token" do
     setup do
-      client       = BitlyOAuth::Client.new('client_id', 'client_secret')
-      access_token = client.get_access_token_from_token('token')
-      @user        = BitlyOAuth::User.new(access_token)
+      @user = BitlyOAuth::User.new('token')
     end
 
     context 'the user' do
